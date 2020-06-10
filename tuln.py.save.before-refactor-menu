@@ -1,0 +1,92 @@
+#!/usr/bin/env python
+
+from unicurses import *
+from random import randint
+from cursor import *
+import subprocess as bash
+
+def spam(str, max_x=10, max_y=10, count=2):
+	offset_x = len(str) + 2
+	for _ in range(count):
+		move (randint(1,max_y-3),
+			randint(2,max_x-offset_x)) #(y,x)
+		addstr (str)
+
+def title():
+	mvaddstr (0,2," TULN ")
+
+def win():
+	#various curses invokes
+	stdscr = initscr()
+	start_color()
+	noecho()
+	curs_set(False)
+	keypad(stdscr, True)
+	stdscr.nodelay(1) #kill cooked mode
+
+	init_color(COLOR_RED, 1000,0,200)
+	init_color(COLOR_BLUE, 300,100,1000)
+	init_color(COLOR_YELLOW, 1000,500,0)
+	init_color(COLOR_MAGENTA, 600,100,600)
+	init_color(COLOR_GREEN, 600,800,0)
+
+	red = make_color(COLOR_RED,COLOR_BLACK)
+	blue = make_color(COLOR_BLUE,COLOR_BLACK)
+	green = make_color(COLOR_GREEN,COLOR_BLACK)
+	purple = make_color(COLOR_MAGENTA,COLOR_BLACK)
+	orange = make_color(COLOR_YELLOW,COLOR_BLACK)
+	white = make_color(COLOR_WHITE, COLOR_BLACK)
+
+	cursor = RogueCursor(stdscr, '+', purple,
+		A_REVERSE)
+	max_y, max_x = getmaxyx(stdscr);
+
+	menu = newwin(6,max_x-11, max_y-8, 5)
+	wcolon(menu,green)
+	box(menu)
+	mvwaddstr(menu,0,1,
+		" you are travelling to distant TULN... ")
+	choices = ["continue", "scry", "exit"]
+	offset=0
+	for choice in choices:
+		mvwaddstr(menu, 1+offset, 4, choice);
+		offset += 1
+	menu_panel = new_panel(menu)
+	bottom_panel(menu_panel)
+
+	buff = "" #key buffer
+	buff_showlast = max_x - 6
+	title()
+	while True:
+		colon(orange)
+		if (randint(0,1000) < 1):
+			spam(" . . * . * . ", max_x, max_y)
+		update_panels()
+		doupdate()
+		c = getch()
+		cursor.update(c)
+		if (c == -1 ): #no key
+			continue
+		elif (c == 27 ): #esc
+			break
+		elif (c == KEY_BACKSPACE ): #erase
+			buff = buff[:-1]
+			tail = buff[-buff_showlast:]
+			mvaddstr (max_y-2,2,(max_x-4) * " " )
+			mvaddstr (max_y-2,4,tail)
+		elif ( 31 < c < 255 ): #buffer
+			buff += chr(c)
+			tail = buff[-buff_showlast:]
+			mvaddstr (max_y-2,2, chr(c),
+			color_pair(red))
+			addstr(" %s" % (tail))
+		else: c = ord('0') #i forget why
+
+def main():
+	win()
+	endwin()
+	bash.call(["clear"])
+	return 0
+
+if (__name__ == "__main__"):
+	main()
