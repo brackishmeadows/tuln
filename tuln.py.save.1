@@ -3,8 +3,9 @@
 from unicurses import *
 from random import randint
 from cursor import *
+from menu import *
 import subprocess as bash
-showmenu = true
+
 
 def spam(str, max_x=10, max_y=10, count=2):
 	offset_x = len(str) + 2
@@ -30,6 +31,7 @@ def makemenu(width,ypos,xpos,msg,options,color):
 	return [menu,menu_panel]
 
 def win():
+        showMenu = False;
 	#various curses invokes
 	stdscr = initscr()
 	start_color()
@@ -38,29 +40,26 @@ def win():
 	keypad(stdscr, True)
 	stdscr.nodelay(1) #kill cooked mode
 	red,blue,green,purple,orange,white=set_colors()
+		#set_colors() from util.py
 	cursor = RogueCursor(stdscr, '+', green,
 		A_REVERSE)
+		#RogueCursor from cursor.py
 	max_y, max_x = getmaxyx(stdscr);
-
-	menu, menu_panel = makemenu(
-		max_x - 11,
-		max_y - 8,
-		5,
+	if (showmenu):
+		menu, menu_panel = makemenu( max_x - 11,
+		max_y - 8, 5,
 		"you are travelling to distant TULN...",
-		["continue", "scry", "exit"],
+		   ["continue", "scry", "exit"],
 		green
-	)
+		)
 
 	buff = "" #key buffer
 	buff_showlast = max_x - 6
-#	title()
+	title()
 	while True:
-		mainLoop()
-
-def mainLoop():
-	colon(orange)
-	if (randint(0,1000) < 1):
-		spam(" . . * . * . ", max_x, max_y)
+		colon(orange)
+		if (randint(0,1000) < 1):
+			spam(" . . * . * . ", max_x, max_y)
 		update_panels()
 		doupdate()
 		c = getch()
@@ -69,9 +68,8 @@ def mainLoop():
 			continue
 		elif (c == 27 ): #esc
 			break
-		elif (c == KEY_TAB ):
-			#toggle menu
-			showmenu = !showmenu
+		elif (c == 9 ): #toggle
+			showmenu = not showmenu
 		elif (c == KEY_BACKSPACE ): #erase
 			buff = buff[:-1]
 			tail = buff[-buff_showlast:]

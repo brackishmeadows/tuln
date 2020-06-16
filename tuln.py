@@ -5,7 +5,8 @@ from random import randint
 from cursor import *
 from menu import *
 import subprocess as bash
-showmenu = False
+UNDEFINED = object()
+showmenu = UNDEFINED
 
 def spam(str, max_x=10, max_y=10, count=2):
 	offset_x = len(str) + 2
@@ -31,6 +32,7 @@ def makemenu(width,ypos,xpos,msg,options,color):
 	return [menu,menu_panel]
 
 def win():
+        showmenu = True;
 	#various curses invokes
 	stdscr = initscr()
 	start_color()
@@ -68,10 +70,12 @@ def win():
 		elif (c == 27 ): #esc
 			break
 		elif (c == 9 ): #toggle
-			if ('showmenu' in vars()):
-				pass
-#				showmenu = not showmenu
-#this doesnt work because showmenu is not assigned?
+			if (showmenu):
+				showmenu = False
+				hide_panel(menu_panel)
+			else:
+				showmenu = True
+				show_panel(menu_panel)
 		elif (c == KEY_BACKSPACE ): #erase
 			buff = buff[:-1]
 			tail = buff[-buff_showlast:]
