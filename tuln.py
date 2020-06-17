@@ -10,7 +10,7 @@ from menu import *
 import subprocess as bash
 import logging
 showmenu = None
-logger = None
+
 
 def spam(str, max_x=10, max_y=10, count=2):
   offset_x = len(str) + 2
@@ -35,19 +35,10 @@ def makemenu(width,ypos,xpos,msg,options,color):
     bottom_panel(menu_panel)
   return [menu,menu_panel]
 
-def startLog():
-    global logger
-    logger= logging.getLogger(__file__)
-    handler = logging.FileHandler(__file__+".log")
-    formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
-    handler.setFormatter(formatter)
-    logger.addHandler(handler)
-    logger.setLevel(logging.DEBUG)
-    logger.info("begin logging")
-    
-
 def win(): #the window
   showmenu = True;
+  logging.basicConfig(filename='tuln.log',level=logging.DEBUG)
+  logging.info('start log')
   #various curses invokes
   stdscr = initscr()
   start_color()
@@ -106,8 +97,8 @@ def win(): #the window
       else: c = ord('0') #i forget why
 
 def main():
-  startLog()
   win()
+  logging.info("tuln terminated normally")
   endwin()
   bash.call(["clear"])
   return 0
