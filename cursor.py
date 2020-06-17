@@ -40,9 +40,9 @@ class Cursor(object):
 		pass
 
 class Gun(Cursor):
-	def __init__ (self, stdscr, body, color=None, attr=None):
+	def __init__ (self, stdscr, color=None, attr=None):
 		logging.info('start gun')
-		super(Gun,self).__init__(stdscr,body,color,attr)
+		super(Gun,self).__init__(stdscr,'▄',color,attr)
 		self.agent = None
 		self.facing = 1
 	def setAgent(self,agent,no_backsies=False):
@@ -60,10 +60,8 @@ class Gun(Cursor):
 				ay = self.agent.y
 				if (key == KEY_LEFT):
 					self.facing = -1
-					self.set_body('┑')
 				elif (key == KEY_RIGHT):
 					self.facing = 1
-					self.set_body('┍')
 				self.x =ax+self.facing
 				self.y =ay
 				moved = (self.x != xx or self.y != yy)

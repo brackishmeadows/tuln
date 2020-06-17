@@ -50,7 +50,7 @@ def win(): #the window
   #set_colors() from util.py
   cursor = Rogue(stdscr,'+', green, A_REVERSE)
   #RogueCursor from cursor.py
-  gun = Gun(stdscr,'┍',white)
+  gun = Gun(stdscr,white)
   cursor.setGun(gun)
   max_y, max_x = getmaxyx(stdscr);
   if (showmenu):
