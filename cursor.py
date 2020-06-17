@@ -11,8 +11,12 @@ class Cursor(object):
 		self.body = body
 		self.attr = attr
 		self.color = color
+		self.window=None
+		self.panel=None
 		self.draw()
 	def draw(self):
+		del self.window
+		del self.panel
 		self.window = newwin(1,1,self.y,self.x)
 		self.panel = new_panel(self.window)
 		self.set_color(self.color)
@@ -20,9 +24,10 @@ class Cursor(object):
 		self.x = self.max_x/2
 		self.y = self.max_y/2
 		self.draw
-	def set_body(char):
+	def set_body(self,char):
+		logging.info('set body '+char)
 		self.body = char
-		self.draw
+		self.draw()
 	def set_color(self, color):
 		if color==None: return
 		self.color = color
@@ -40,7 +45,6 @@ class Gun(Cursor):
 		super(Gun,self).__init__(stdscr,body,color,attr)
 		self.agent = None
 		self.facing = 1
-
 	def setAgent(self,agent,no_backsies=False):
 		logging.info('add agent to gun')
 		self.agent = agent
@@ -56,10 +60,10 @@ class Gun(Cursor):
 				ay = self.agent.y
 				if (key == KEY_LEFT):
 					self.facing = -1
-					set_body(self, '┑')
+					self.set_body('┑')
 				elif (key == KEY_RIGHT):
 					self.facing = 1
-					set_body(self, '┍')
+					self.set_body('┍')
 				self.x =ax+self.facing
 				self.y =ay
 				moved = (self.x != xx or self.y != yy)
@@ -67,10 +71,9 @@ class Gun(Cursor):
 					logging.info('gun moved')
 					move_panel(self.panel, self.y, self.x)
 					self.update() #with no key
-
-				logging.info('GUNSUCCESS: has agent')
 		except:
-			logging.warning('GUNERROR:no agent')
+			pass
+			logging.warning('GUN:no agent')
 
 
 class Rogue(Cursor):
@@ -87,9 +90,9 @@ class Rogue(Cursor):
 		try:
 			if(self.gun is not None):
 				self.gun.update(key)
-				logging.info('ROGUESUCCESS: has gun')
 		except:
-			logging.warning("ROGUEERROR: no gun")
+			pass
+			logging.warning("ROGUE: no gun")
 	def move(self, key=None, vel=1):
 		xx,yy = self.x, self.y
 		if (key == KEY_UP
