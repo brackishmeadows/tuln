@@ -1,10 +1,11 @@
+
 # coding: utf-8
 from unicurses import *
 from util import *
 import logging
 
 class Cursor(object):
-	def __init__ (self, stdscr, body, color, attr = A_NORMAL):
+	def __init__ (self, stdscr, body='>', color=None, attr = A_NORMAL):
 		yy,xx = stdscr.getmaxyx()
 		self.max_x,self.max_y = xx-1,yy-1 #collision bounds
 		self.center()
@@ -20,6 +21,10 @@ class Cursor(object):
 		self.window = newwin(1,1,self.y,self.x)
 		self.panel = new_panel(self.window)
 		self.set_color(self.color)
+	def set_xy(self,x,y):
+		self.x = x
+		self.y = y
+		self.draw()
 	def center(self):
 		self.x = self.max_x/2
 		self.y = self.max_y/2

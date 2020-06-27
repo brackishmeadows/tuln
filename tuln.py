@@ -48,18 +48,18 @@ def win(): #the window
   stdscr.nodelay(1) #kill cooked mode
   red,blue,green,purple,orange,white=set_colors()
   #set_colors() from util.py
-  cursor = Rogue(stdscr,'+', green, A_REVERSE)
-  #RogueCursor from cursor.py
+  rogue = Rogue(stdscr,'+', green, A_REVERSE)
   gun = Gun(stdscr,white)
-  cursor.setGun(gun)
+  rogue.setGun(gun)
   max_y, max_x = getmaxyx(stdscr);
-  if (showmenu):
-    menu, menu_panel = makemenu( max_x - 11,
+  menu, menu_panel = makemenu( max_x - 11,
       max_y - 8, 5,
       "you are travelling to distant TULN...",
       ["continue", "scry", "exit"],
       green
-    )
+  )
+  cursor = Cursor(stdscr,'>',green)
+  cursor.set_xy(7,max_y-7)
 
   buff = "" #key buffer
   buff_showlast = max_x - 6
@@ -71,7 +71,7 @@ def win(): #the window
       update_panels()
       doupdate()
       c = getch()
-      cursor.update(c)
+      rogue.update(c)
       if (c == -1 ): #no key
         continue
       elif (c == 27 ): #esc
