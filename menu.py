@@ -1,2 +1,0 @@
-from unicurses import *
-#stuff
