@@ -1,2 +1,2 @@
 # tuln
-a game, runs in a linux terminal
+a pycurses game, runs in a linux terminal
